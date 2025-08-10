@@ -19,14 +19,21 @@ Describe your environment settings, structure of your code, and usage instructio
  klue/bert-base uses the original BERT architecture, which may have weaker contextual representation compared to newer Korean PLMs (e.g., RoBERTa, ELECTRA).
    - RoBERTa models remove NSP and train with larger batches, often yielding better contextual understanding and higher accuracy in RE/classification tasks.
    - ELECTRA models are more sample-efficient, potentially delivering better generalization on the same dataset.
-So for tokenizer, 
+So for tokenizer, below is the result of the test for just adding the markers from the raw data.
 
-| Tokenizer                                                | Reason it matches well                                                                                                         |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **`klue/roberta-base` tokenizer**  (if roberta-base is the best, then try klue/roberta-large)                      | Same as above but lighter. Still matches your corpus style well.     |
-| **`monologg/koelectra-base-v3-discriminator` tokenizer** | Korean-specific SentencePiece; good for keeping entities whole; more efficient.                                                |
-| **`snunlp/KR-ELECTRA-discriminator` tokenizer**          | Massive Korean corpus coverage; good for formal names like in your dataset.                                                    |
-| **`kykim/bert-kor-base` tokenizer**                      | WordPiece Korean vocab; solid baseline for BERT-style; may split some entities more.                                           |
+
+| Model                            |    Step | Val Loss | **Micro F1** | AUPRC | Accuracy |
+| -------------------------------- | ------- | -------- | ------------ | ----- | -------- |
+| **klue/roberta-base**            | 6500    | 1.3357   | **59.60**    | 45.29 | 0.6110   |
+| **klue/bert-base**               | 4500    | 1.2574   | **59.33**    | 46.34 | 0.6098   |
+| **kykim/bert-kor-base**          | 4500    | 1.2492   | **58.56**    | 45.99 | 0.5987   |
+| **monologg/koelectra-base-v3**   | 5500    | 1.3706   | **58.57**    | 35.80 | 0.5964   |
+| **bert-base-multilingual-cased** | 5500    | 1.3457   | **57.09**    | 42.23 | 0.5856   |
+| **BM-K/KoSimCSE-roberta-multitask** | 5000 | 1.2984 |   **59.140     |45.49  | 0.6126   |
+* Steps are vary aas i added early stopping
+
+So I chose **klue.roberta-base** as the tokenizer.
+
 
 ## Marker
 Use maker in the preprocess pipe for following reasons.
