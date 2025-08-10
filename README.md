@@ -22,14 +22,38 @@ Describe your environment settings, structure of your code, and usage instructio
 So for tokenizer, below is the result of the test for just adding the markers from the raw data.
 
 
-| Model                            |    Step | Val Loss | **Micro F1** | AUPRC | Accuracy |
-| -------------------------------- | ------- | -------- | ------------ | ----- | -------- |
-| **klue/roberta-base**            | 6500    | 1.3357   | **59.60**    | 45.29 | 0.6110   |
-| **klue/bert-base**               | 4500    | 1.2574   | **59.33**    | 46.34 | 0.6098   |
-| **kykim/bert-kor-base**          | 4500    | 1.2492   | **58.56**    | 45.99 | 0.5987   |
-| **monologg/koelectra-base-v3**   | 5500    | 1.3706   | **58.57**    | 35.80 | 0.5964   |
-| **bert-base-multilingual-cased** | 5500    | 1.3457   | **57.09**    | 42.23 | 0.5856   |
-| **BM-K/KoSimCSE-roberta-multitask** | 5000 | 1.2984 |   **59.140     |45.49  | 0.6126   |
+| Model                                     | lrs   | epochs | train\_bsz | Best Step | Micro F1 | AUPRC   | Accuracy | Val Loss |
+| ----------------------------------------- | ----- | ------ | ---------- | --------- | -------- | ------- | -------- | -------- |
+| klue\_bert-base                           | 3e-05 | 10     | 16         | 4500      | 59.8642  | 47.9678 | 0.613181 | 1.274938 |
+| klue\_bert-base                           | 3e-05 | 5      | 16         | 4000      | 59.7681  | 47.1765 | 0.606098 | 1.287195 |
+| klue\_bert-base                           | 5e-05 | 5      | 16         | 7000      | 59.6718  | 47.4565 | 0.609794 | 1.430602 |
+| klue\_bert-base                           | 3e-05 | 5      | 32         | 3000      | 59.4809  | 46.9674 | 0.607330 | 1.329728 |
+| klue\_bert-base                           | 5e-05 | 5      | 32         | 3500      | 59.4452  | 48.2639 | 0.608870 | 1.387745 |
+| klue\_bert-base                           | 5e-05 | 10     | 16         | 5000      | 59.6273  | 47.5093 | 0.604866 | 1.282922 |
+| klue\_bert-base                           | 5e-05 | 10     | 32         | 2000      | 59.3649  | 47.0007 | 0.602402 | 1.327961 |
+| klue\_roberta-base                        | 5e-05 | 5      | 16         | 7500      | 59.6945  | 47.8759 | 0.604866 | 1.481126 |
+| klue\_roberta-base                        | 5e-05 | 5      | 32         | 4500      | 59.8912  | 47.5600 | 0.614721 | 1.428611 |
+| klue\_roberta-base                        | 3e-05 | 5      | 16         | 7500      | 60.2211  | 46.0446 | 0.615953 | 1.460129 |
+| klue\_roberta-base                        | 3e-05 | 5      | 32         | 3500      | 60.3333  | 47.9823 | 0.615953 | 1.291947 |
+| **klue\_roberta-base**                        | 2e-05 | 5      | 16         | 8000      | **60.6296**  | 48.4109 | **0.618417** | 1.374527 |
+| klue\_roberta-base                        | 2e-05 | 5      | 32         | 4000      | 58.8595  | 48.3168 | 0.607022 | 1.319022 |
+| monologg\_koelectra-base-v3-discriminator | 5e-05 | 5      | 16         | 6000      | 59.3478  | 41.7290 | 0.604558 | 1.384946 |
+| monologg\_koelectra-base-v3-discriminator | 5e-05 | 5      | 32         | 3000      | 59.0235  | 39.5930 | 0.607330 | 1.359320 |
+| monologg\_koelectra-base-v3-discriminator | 3e-05 | 5      | 16         | 8000      | 59.6228  | 39.8815 | 0.607946 | 1.417223 |
+| monologg\_koelectra-base-v3-discriminator | 3e-05 | 5      | 32         | 3000      | 57.6611  | 34.6298 | 0.588235 | 1.338130 |
+| bert-base-multilingual-cased              | 5e-05 | 5      | 16         | 5500      | 56.0200  | 41.4280 | 0.579920 | 1.363017 |
+| bert-base-multilingual-cased              | 5e-05 | 5      | 32         | 3500      | 57.5140  | 42.7060 | 0.590699 | 1.343769 |
+| bert-base-multilingual-cased              | 3e-05 | 5      | 16         | 7500      | 57.3580  | 43.1300 | 0.586387 | 1.438589 |
+| bert-base-multilingual-cased              | 3e-05 | 5      | 32         | 2500      | 57.3490  | 43.3980 | 0.581152 | 1.312771 |
+| bert-base-multilingual-cased              | 2e-05 | 5      | 16         | 7000      | 57.7780  | 43.6700 | 0.592239 | 1.322330 |
+| bert-base-multilingual-cased              | 2e-05 | 5      | 32         | 4500      | 57.9570  | 44.6230 | 0.593163 | 1.326897 |
+| kykim\_bert-kor-base                      | 5e-05 | 5      | 16         | 4500      | 59.2880  | 47.0530 | 0.605482 | 1.279820 |
+| kykim\_bert-kor-base                      | 5e-05 | 5      | 32         | 3500      | 59.1060  | 44.4160 | 0.606098 | 1.369532 |
+| kykim\_bert-kor-base                      | 3e-05 | 5      | 16         | 4500      | 59.1750  | 45.5350 | 0.602710 | 1.268549 |
+| kykim\_bert-kor-base                      | 3e-05 | 5      | 32         | 4000      | 58.6210  | 44.7010 | 0.601478 | 1.371919 |
+| kykim\_bert-kor-base                      | 2e-05 | 5      | 16         | 5000      | 59.7150  | 47.1080 | 0.595627 | 1.280806 |
+| kykim\_bert-kor-base                      | 2e-05 | 5      | 32         | 2500      | 58.2770  | 46.2000 | 0.592239 | 1.279668 |
+
 * Steps are vary aas i added early stopping
 
 So I chose **klue.roberta-base** as the tokenizer.
