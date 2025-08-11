@@ -107,10 +107,73 @@ python run.py
 ## 4. Approach
 
 ### EDA
+1. Entity Type Pair Distribution
 
-*(Placeholder — to be completed later)*
+Top 10 most frequent (subject_type, object_type) pairs:
+*(Placeholder — to be completed later)*| subject\_type | object\_type | count |
+| ------------- | ------------ | ----- |
+| ORG           | ORG          | 5,100 |
+| PER           | PER          | 5,009 |
+| ORG           | PER          | 4,779 |
+| PER           | ORG          | 4,246 |
+| PER           | POH          | 3,454 |
+| PER           | DAT          | 2,139 |
+| ORG           | DAT          | 2,110 |
+| PER           | LOC          | 1,785 |
+| ORG           | LOC          | 1,776 |
+| ORG           | POH          | 1,659 |
 
-### Model & Training Strategy (Detailed)
+2. Label Distribution for Top Entity Pairs
+
+Example: For ORG → DAT
+
+    no_relation: 1,582
+
+    org:founded: 450
+
+    org:dissolved: 66
+
+    Others are rare (≤ 5 samples)
+
+Example: For ORG → LOC
+
+    org:place_of_headquarters: 894
+
+    org:member_of: 173
+
+    org:members: 97
+
+    no_relation: 548
+
+3. Sentence Length
+
+    Mean: 97.08 characters
+
+    Min: 14, Max: 455
+
+    50% of sentences are ≤ 87 characters, 75% ≤ 118 characters
+
+4. Entity Position Distance
+
+    Mean distance between subject & object: 22.88 characters
+
+    Min: 3, Max: 295
+
+    50% of pairs are within 14 characters, indicating strong local context for many relations
+
+Key Insights for RE Modeling
+
+    Strong class imbalance → Need to handle dominant no_relation class and rare relation classes.
+
+    Entity type pairs are highly predictive (e.g., ORG→DAT often maps to org:founded).
+
+    Entity proximity is relatively small for most cases, which suggests positional embeddings or distance-based features could be helpful.
+
+    Sentence length variability indicates the model should handle both short and long contexts.
+
+
+
+### Model & Training Strategy
 
 #### Tokenizer / Backbone Search
 
