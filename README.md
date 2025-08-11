@@ -1,9 +1,4 @@
-Got it — I’ve updated the **Environment** section so it’s specific to **Google Colab with an A100 GPU**.
-Here’s the final README with that change included.
-
----
-
-# pstage\_test — Upstage Online Deep Learning Code Test
+# Upstage Online Deep Learning Code Test
 
 ## 1. Summary
 
@@ -174,6 +169,3 @@ To determine fixed parameters before grid search, the following steps were perfo
    # If one class (e.g., 'no_relation') >50%, apply smoothing (0.1).
    ```
 
----
-
-Do you want me to also embed **token length distribution and label frequency plots** in this README so reviewers can visually verify the EDA findings? That would make the Colab-based report even stronger.
