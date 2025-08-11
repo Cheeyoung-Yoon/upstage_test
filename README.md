@@ -107,70 +107,160 @@ python run.py
 ## 4. Approach
 
 ### EDA
-1. Entity Type Pair Distribution
 
-Top 10 most frequent (subject_type, object_type) pairs:
-*(Placeholder — to be completed later)*| subject\_type | object\_type | count |
-| ------------- | ------------ | ----- |
-| ORG           | ORG          | 5,100 |
-| PER           | PER          | 5,009 |
-| ORG           | PER          | 4,779 |
-| PER           | ORG          | 4,246 |
-| PER           | POH          | 3,454 |
-| PER           | DAT          | 2,139 |
-| ORG           | DAT          | 2,110 |
-| PER           | LOC          | 1,785 |
-| ORG           | LOC          | 1,776 |
-| ORG           | POH          | 1,659 |
+#### 1. Label Distribution by Entity Type Pair
 
-2. Label Distribution for Top Entity Pairs
+The table below shows counts of each relation for every `(subject_type, object_type)` combination.
 
-Example: For ORG → DAT
+|                | no\_relation | org\:alternate\_names | org\:dissolved | org\:founded | org\:founded\_by | org\:member\_of | org\:members | org\:number\_of\_employees/members | org\:place\_of\_headquarters | org\:political/religious\_affiliation | org\:product | org\:top\_members/employees | per\:alternate\_names | per\:children | per\:colleagues | per\:date\_of\_birth | per\:date\_of\_death | per\:employee\_of | per\:origin | per\:other\_family | per\:parents | per\:place\_of\_birth | per\:place\_of\_death | per\:place\_of\_residence | per\:product | per\:religion | per\:schools\_attended | per\:siblings | per\:spouse | per\:title |
+| :------------- | -----------: | --------------------: | -------------: | -----------: | ---------------: | --------------: | -----------: | ---------------------------------: | ---------------------------: | ------------------------------------: | -----------: | --------------------------: | --------------------: | ------------: | --------------: | -------------------: | -------------------: | ----------------: | ----------: | -----------------: | -----------: | --------------------: | --------------------: | ------------------------: | -----------: | ------------: | ---------------------: | ------------: | ----------: | ---------: |
+| ('ORG', 'DAT') |         1582 |                     1 |             66 |          450 |                0 |               5 |            1 |                                  0 |                            4 |                                     1 |            0 |                           0 |                     0 |             0 |               0 |                    0 |                    0 |                 0 |           0 |                  0 |            0 |                     0 |                     0 |                         0 |            0 |             0 |                      0 |             0 |           0 |          0 |
+| ('ORG', 'LOC') |          548 |                    23 |              0 |            0 |                0 |             173 |           97 |                                  0 |                          894 |                                     4 |           24 |                          13 |                     0 |             0 |               0 |                    0 |                    0 |                 0 |           0 |                  0 |            0 |                     0 |                     0 |                         0 |            0 |             0 |                      0 |             0 |           0 |          0 |
+| ('ORG', 'ORG') |         1958 |                  1154 |              0 |            0 |                5 |            1320 |          285 |                                  0 |                          254 |                                    54 |           48 |                          22 |                     0 |             0 |               0 |                    0 |                    0 |                 0 |           0 |                  0 |            0 |                     0 |                     0 |                         0 |            0 |             0 |                      0 |             0 |           0 |          0 |
+| ('ORG', 'PER') |          401 |                    31 |              0 |            0 |              144 |               1 |            2 |                                  0 |                            1 |                                     1 |            3 |                        4195 |                     0 |             0 |               0 |                    0 |                    0 |                 0 |           0 |                  0 |            0 |                     0 |                     0 |                         0 |            0 |             0 |                      0 |             0 |           0 |          0 |
+| ('PER', 'ORG') |          741 |                     0 |              0 |            0 |                0 |               0 |            0 |                                  0 |                            0 |                                     0 |            0 |                           0 |                    40 |             1 |              10 |                    0 |                    1 |              2857 |         267 |                  1 |            0 |                     3 |                     1 |                        11 |           11 |            80 |                     80 |             0 |           1 |        141 |
 
-    no_relation: 1,582
+---
 
-    org:founded: 450
+#### 2. Entity Distance per Label
 
-    org:dissolved: 66
+Average and distribution of character distances between subject and object entities.
 
-    Others are rare (≤ 5 samples)
+| label                 | count | mean  | std   | min | 25%  | 50% | 75%  | max |
+| --------------------- | ----- | ----- | ----- | --- | ---- | --- | ---- | --- |
+| per\:place\_of\_death | 40    | 34.18 | 22.65 | 5   | 20.8 | 28  | 45.2 | 94  |
+| no\_relation          | 9534  | 30.36 | 27.61 | 3   | 12   | 22  | 40   | 295 |
+| org\:product          | 380   | 29.61 | 26.96 | 4   | 11   | 20  | 39   | 163 |
+| org\:top\_members/... | 4284  | 14.61 | 18.74 | 3   | 7    | 9   | 13   | 253 |
+| per\:date\_of\_birth  | 1130  | 10.95 | 8.56  | 4   | 7    | 9   | 10   | 99  |
 
-Example: For ORG → LOC
+---
 
-    org:place_of_headquarters: 894
+#### 3. Sentence Length per Label
 
-    org:member_of: 173
+Average and distribution of sentence lengths per label.
+| label                 | count | mean   | std   | min | 25% | 50% | 75% | max |
+| --------------------- | ----- | ------ | ----- | --- | --- | --- | --- | --- |
+| org\:alternate\_names | 1320  | 108.59 | 52.12 | 22  | 72  | 98  | 133 | 419 |
+| no\_relation          | 9534  | 104.71 | 50.96 | 21  | 70  | 94  | 126 | 447 |
+| org\:top\_members/... | 4284  | 98.62  | 41.66 | 14  | 70  | 91  | 118 | 345 |
+| per\:date\_of\_birth  | 1130  | 63.40  | 29.98 | 25  | 45  | 55  | 74  | 384 |
 
-    org:members: 97
+---
 
-    no_relation: 548
+#### 4. Top Frequent Entities per Label
 
-3. Sentence Length
+**Label:** `no_relation`
 
-    Mean: 97.08 characters
+* Top Subjects: {'민주당': 102, '두산 베어스': 59, 'FC 서울': 53, '더불어민주당': 46, '삼성 라이온즈': 46}
+* Top Objects: {'2016년': 64, '물리학': 59, '더불어민주당': 57, '2007': 48, 'UEFA': 45}
 
-    Min: 14, Max: 455
+**Label:** `org:alternate_names`
 
-    50% of sentences are ≤ 87 characters, 75% ≤ 118 characters
+* Top Subjects: {'문화방송': 41, '유럽 축구 연맹': 35, '국제수영연맹': 32, '국제축구연맹': 31, '동양방송': 16}
+* Top Objects: {'MBC': 41, 'FIFA': 37, 'UEFA': 35, 'FINA': 33, 'IOC': 29}
 
-4. Entity Position Distance
+**Label:** `org:founded`
 
-    Mean distance between subject & object: 22.88 characters
+* Top Subjects: {'동아일보': 6, '동양척식주식회사': 4, 'KBO 리그': 4, '대한민국 정부': 3, '유엔난민기구': 3}
+* Top Objects: {'1982년': 8, '1920년': 8, '2008년': 7, '1997년': 7, '1919년': 6}
 
-    Min: 3, Max: 295
 
-    50% of pairs are within 14 characters, indicating strong local context for many relations
+#### **5. Problem Understanding**
 
-Key Insights for RE Modeling
+##### **Task Definition**
 
-    Strong class imbalance → Need to handle dominant no_relation class and rare relation classes.
+* **Goal**: Predict one of 30 predefined relations between two entities in a sentence.
+* **Input**:
 
-    Entity type pairs are highly predictive (e.g., ORG→DAT often maps to org:founded).
+  * **Sentence**: Natural language sentence containing two marked entities.
+  * **Subject Entity**: Word or phrase (with type information: `PER`, `ORG`, `LOC`, etc.)
+  * **Object Entity**: Word or phrase (with type information).
+* **Output**:
 
-    Entity proximity is relatively small for most cases, which suggests positional embeddings or distance-based features could be helpful.
+  * A relation label (e.g., `org:founded`, `per:employee_of`, `no_relation`).
 
-    Sentence length variability indicates the model should handle both short and long contexts.
+##### **Dataset Characteristics from EDA**
 
+* **Class imbalance**:
+
+  * `no_relation` ≈ **29%** of data
+  * Several rare classes (`org:dissolved`, `per:religion`) have very few samples.
+* **Entity type correlation**:
+
+  * Certain type pairs are highly predictive (e.g., `ORG` → `DAT` often = `org:founded`).
+* **Entity proximity**:
+
+  * Median subject-object distance ≈ **14 characters**; most relations occur within \~30 characters.
+* **Sentence length variance**:
+
+  * Ranges from 14 to 455 characters; 75% ≤ 118 characters.
+
+---
+
+#### **2. Modeling Strategy**
+
+##### **2.1 Data Preprocessing**
+
+1. **Entity Marking with Type Information**
+
+   * Wrap entities in special tokens with their types:
+
+     ```text
+     [SUBJ_ORG] 오라클 [/SUBJ_ORG] ... [OBJ_DAT] 1982년 [/OBJ_DAT]
+     ```
+   * Allows model to distinguish role and type of each entity.
+   * Recommended format: `[SUBJ_{TYPE}] ... [/SUBJ_{TYPE}]` and `[OBJ_{TYPE}] ... [/OBJ_{TYPE}]`.
+
+2. **Handling Class Imbalance**
+
+   * **Weighted Loss**:
+
+     ```python
+     loss_fn = nn.CrossEntropyLoss(weight=class_weights_tensor)
+     ```
+   * **Focal Loss** to emphasize hard-to-classify rare relations.
+   * Optional **undersampling** of `no_relation` for balanced mini-batches.
+
+3. **Positional Features**
+
+   * From EDA: most relations are short-range.
+   * Add **distance embedding**: bucketize `entity_distance` into bins (e.g., 0–5, 6–10, 11–20, >20).
+   * Can be added as extra embedding layer in the model.
+
+4. **Max Sequence Length**
+
+   * Set `max_len=256` (covers >99% of dataset while avoiding truncation for long cases).
+
+---
+
+##### **2.2 Model Architecture**
+
+###### **Baseline — Transformer-based Classifier**
+
+* **Backbone**: `klue/roberta-base` or `monologg/koelectra-base-v3-discriminator` (good for Korean NLU).
+* **Input**: Tokenized sentence with entity markers.
+* **Output**: Dense layer → Softmax over 30 labels.
+* **Why**: Strong pretrained language understanding for Korean, simple to implement.
+
+#### **Entity-Aware Transformer (Improved)**
+
+* Adds **type embeddings** for `subject_type` and `object_type`.
+* Uses **marker-based pooling**:
+
+  * Extract hidden states of special entity markers.
+  * Concatenate `[SUBJ]` + `[OBJ]` embeddings → Classification layer.
+* Improves focus on entities, which is critical for RE.
+
+#### **Hybrid Approach (Context + Entity Representation)**
+
+* Encode sentence with transformer.
+* Separately embed:
+
+  * **Subject span**
+  * **Object span**
+  * **Global context**
+* Concatenate all → MLP → Softmax.
 
 
 ### Model & Training Strategy
