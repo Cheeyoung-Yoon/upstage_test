@@ -65,6 +65,15 @@
 | **L**  | R-Drop Level Test | Runs specifically testing different R-Drop α values and combinations with other techniques.                                         |
 | **B**  | Batch Size Test   | Experiments comparing the effect of different batch sizes (16 vs 32) on training stability and performance for promising configs.   |
 
+2-2 Learning Rate test
+| LR         | Approx. Best Step | Best Micro F1 | AUPRC (around peak) | Notes                                            |
+| ---------- | ----------------- | ------------- | ------------------- | ------------------------------------------------ |
+| **1.2e-5** | \~16k             | **77.017**    | \~65.45             | Highest F1, slightly lower AUPRC                 |
+| **1.6e-5** | \~14k             | **77.013**    | \~66.05             | Nearly identical F1, better AUPRC, more balanced |
+| 2.0e-5     | \~12k             | 76.800        | \~65.50             | Slightly lower overall                           |
+| 2.4e-5     | \~22k             | 76.728        | \~65.16             | Slightly lower overall                           |
+| 3.0e-5     | \~22k             | 76.678        | \~64.71             | Slightly lower overall                           |
+
 
 ---
 
