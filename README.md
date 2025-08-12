@@ -89,27 +89,120 @@
 ### Project Structure
 ```
 
-pstage\_test/
-├── parts\_config.py      # Label list & dataclass configs
-├── data\_plus.py         # Dataset loading, preprocessing, marker insertion
-├── model\_builders.py    # Marker Head, ERPE model builders
-├── trainer\_plus.py      # Trainer with Focal/CB Loss, R-Drop, FGM, LLRD, HNM
-├── hardneg\_callback.py  # Hard Negative Mining callback
-├── train\_re.py          # Single-run training
-├── grid\_plus.py         # Grid search over models & hyperparameters
+pstage_test/
+├── parts_config.py      # Label list & dataclass configs
+├── data_plus.py         # Dataset loading, preprocessing, marker insertion
+├── model_builders.py    # Marker Head, ERPE model builders
+├── trainer_plus.py      # Trainer with Focal/CB Loss, R-Drop, FGM, LLRD, HNM
+├── hardneg_callback.py  # Hard Negative Mining callback
+├── train_re.py          # Single-run training
+├── grid_plus.py         # Grid search over models & hyperparameters
 ├── run.py               # Entry point
 
 ````
 
 ### Usage
-1. Upload the dataset and set `TRAIN_CSV` and `DEV_CSV` paths.
-2. Edit `MODELS` and `HP_SPACE` to desired configurations.
-3. Run:
-```bash
-python run.py
-````
+This folder contains scripts to:
 
-4. Results will be saved under the `base_out` directory and aggregated into CSV.
+- run.py — search and compare model + hyperparameter candidates (model selection)
+- train_final.py — train the chosen final model and save it
+- infer_test.py — run inference on the test set and export a submission
+
+All paths below are relative to this folder. Adjust the constants at the top of each script if your files live elsewhere.
+
+#### 1 Setup
+
+- Python: 3.12
+- Recommended: a CUDA-capable GPU for training. CPU works but will be slow.
+
+Create a virtual environment and install dependencies:
+
+```powershell
+# from the selection folder
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+
+# Optional (Windows + NVIDIA): install a CUDA-enabled PyTorch from https://pytorch.org
+# Example (adapt to your CUDA version):
+# pip install --index-url https://download.pytorch.org/whl/cu121 torch torchvision torchaudio
+```
+
+#### 2 Data locations (defaults)
+
+Place your data like this, or update the paths in the scripts:
+
+- run.py expects: `../data/dataset/train.csv`
+- train_final.py expects: `../dataset/train.csv` (and optional dev CSV)
+- infer_test.py expects: `../dataset/test_data.csv`
+
+If your layout is different, edit the `TRAIN_CSV` / `DEV_CSV` / `TEST_CSV` constants in each script.
+
+The CSV schema should match your training dataset (same text/label fields). `infer_test.py` only needs the test fields and an optional `id` column (it will auto-create one if missing).
+
+#### 3 Model selection — run grid experiments
+
+Edit `run.py` as needed:
+
+- Set `TRAIN_CSV` (and `DEV_CSV` if you have a separate dev set)
+- Edit `MODELS` to the candidate models to try
+- Tweak `HP_SPACE` for the hyperparameters you want to sweep
+
+Then run:
+
+```powershell
+# inside selection/
+python .\run.py
+```
+
+Outputs:
+
+- Results CSV at `../data/result.csv`
+- Per-run artifacts in `../grid_runs_plus`
+- Top rows printed to console
+
+Use this to pick the best-performing model/hyperparameters.
+
+#### 4 Train the final model
+
+Edit `train_final.py`:
+
+- `TRAIN_CSV` and `DEV_CSV` paths
+- `FINAL_DIR` — where the best checkpoint + tokenizer will be saved
+- `TrainConfig` hyperparameters
+
+Then run:
+
+```powershell
+python .\train_final.py
+```
+
+On success, the final model files (including tokenizer) are in `FINAL_DIR`.
+
+#### 5 Inference on test data
+
+Ensure `FINAL_DIR` points to the trained model directory and `TEST_CSV` points to your test CSV. Then run:
+
+```powershell
+python .\infer_test.py
+```
+
+Outputs:
+
+- `../submission.csv` — with columns:
+  - `id`: the test row ID (auto-generated if not present)
+  - `pred_label`: the predicted label name from `DEFAULT_LABEL_LIST`
+  - `probs`: JSON array of per-class probabilities (length must equal the number of labels)
+
+If the model has additional tokens (marker tokens, etc.), `infer_test.py` will automatically resize the embedding to match the tokenizer size.
+
+###### Notes
+
+- The label set comes from `DEFAULT_LABEL_LIST` in `parts_config.py`; keep this consistent across training and inference.
+- If PyTorch complains about CUDA on Windows, install the PyTorch wheel matched to your CUDA version from the official site.
+- For path mismatches, update the constants at the top of each script—no code changes needed.
+
 
 ---
 
